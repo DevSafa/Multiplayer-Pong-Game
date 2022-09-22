@@ -13,7 +13,7 @@ import { io, Socket } from 'socket.io-client';
 import { SocketContext, SocketContextType } from '../context/socket';
 
 let index_msg: number = 0;
-let socket: Socket;
+// let socket: Socket;
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {
         marginTop: theme.spacing(3),
@@ -59,6 +59,8 @@ const ChatUIRoom = (Props:{currRoom:string}) => {
     const msgs = useSelector((state: RootState) => state.chat).msgs;
     // const Props.currRoom = chat_state.curr_room;
     // const msgs = chat_state.msgs;
+    const { socket } = useContext(SocketContext) as SocketContextType;
+
 
     const [message_input, setMessage] = useState("");
 
@@ -96,19 +98,26 @@ const ChatUIRoom = (Props:{currRoom:string}) => {
         }
     }
 
-    function joinRoom(curr_user: string): Socket {
-        if ((!socket || socket.disconnected) && Props.currRoom !== '') {
-            socket = io(process.env.REACT_APP_SERVER_IP as string, {
-                auth: {
-                    room: Props.currRoom,
-                    user: curr_user,
-                }
-            });
-        }
-        if (socket)
-            socket.emit('JoinRoom');
-        return (socket);
-    }
+    // function joinRoom(curr_user: string): Socket {
+    //     if ((!socket || socket.disconnected) && Props.currRoom !== '') {
+    //         socket = io(process.env.REACT_APP_SERVER_IP as string, {
+    //             auth: {
+    //                 room: Props.currRoom,
+    //                 user: curr_user,
+    //             }
+    //         });
+    //     }
+    //     if (socket)
+    //         socket.emit('JoinRoom');
+    //     return (socket);
+    // }
+
+    // const receiveUpdate = () => {
+	// 	// console.log("check data :  ");
+	// 	socket.on('roomsOfUser', (data: { status: boolean, message: string, user: string }) => {
+	// 		console.log("check data :  "+data);
+	// 	})
+	// }
 
     useEffect(() => {
         console.log("chatUIRoom");
@@ -116,14 +125,14 @@ const ChatUIRoom = (Props:{currRoom:string}) => {
         if (Props.currRoom !== '')
             initMsgs();
 
-        socket = joinRoom(logged_user);
+        // socket = joinRoom(logged_user);
         if (socket)
             recieveMsgs();
-
+        
         if (bottomRef.current) {
             bottomRef.current?.scrollIntoView({ behavior: "smooth" });
         }
-
+        
         return () => {
             console.log("clear rooms");
             dispatch(clearMessages());
