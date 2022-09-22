@@ -35,7 +35,7 @@ const ChatGlobal = () => {
 			});
 		}
 		if (socket)
-		socket.emit('JoinRoom');
+			socket.emit('JoinRoom');
 		return (socket);
 	}
 

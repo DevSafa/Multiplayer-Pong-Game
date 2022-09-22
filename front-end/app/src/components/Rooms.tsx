@@ -1,4 +1,4 @@
-import { Box, IconButton, List, Stack, Typography } from '@mui/material'
+import { Alert, Box, IconButton, List, Stack, Typography } from '@mui/material'
 import roomIcon from '../assets/chat-room.png'
 import RoomButtonChat from './RoomButtonChat';
 import { useContext, useEffect, useState } from "react";
@@ -11,13 +11,18 @@ import { SocketContext, SocketContextType } from "../context/socket";
 
 
 let initRooms: RoomsOfUser[] = [] as RoomsOfUser[];
+const initAlertMsg: { is_alert: boolean, status: boolean, msg: string } = {
+	is_alert: false,
+	status: false,
+	msg: "",
+};
 
 const Rooms = () => {
 	const [rooms, setRooms] = useState(initRooms);
 	const logged_user = useSelector((state: RootState) => state.user).login;
 	const currentRoom = useSelector((state: RootState) => state.chat).curr_room;
 	const { socket } = useContext(SocketContext) as SocketContextType;
-
+	const [alertMsg, setAlertMsg] = useState(initAlertMsg);
 
 	function getRooms() {
 		getMyRooms().then((value) => {
@@ -34,18 +39,23 @@ const Rooms = () => {
 	const receiveUpdate = () => {
 		// console.log("check data :  ");
 		socket.on('roomsOfUser', (data: { status: boolean, message: string, user: string }) => {
+<<<<<<< HEAD
 			console.log("check data :  "+data);
 			if (data.status)
 			{
 				// if ( data.user === logged_user)
 				// 	// display msg
+=======
+			if ( data.user === logged_user){
+				setAlertMsg({is_alert:true, status:data.status, msg:data.message});
+>>>>>>> e7a2e10b3e6ca84fd46c999c2887209581ae7119
 				getRooms();
 			}
-			// else
-			// 	// display
+			else
+				setAlertMsg({is_alert:true, status:data.status, msg:data.message});
 		})
 	}
-	
+
 	useEffect(() => {
 		// Get Rooms
 		if (rooms.length === 0)
@@ -54,7 +64,6 @@ const Rooms = () => {
 			receiveUpdate();
 		return () => {
 			console.log("clear rooms");
-			// setRooms(initRooms);
 		}
 	}, [socket])
 
@@ -108,17 +117,17 @@ const Rooms = () => {
 							Create new room
 						</Typography>
 					</div>
-				</Stack>
+				</Stack> 
 				<List style={{ overflow: 'auto', height: "100%" }} >
 					{rooms.length && rooms.map((item: RoomsOfUser) => (
 						<li key={item.id} className='item-friend'>
 							<RoomButtonChat room={item} socket={socket} />
 						</li>
 					))}
-
 				</List>
 			</Stack>
-
+			{alertMsg.is_alert && ( alertMsg.status && <Alert severity="success">{alertMsg.msg}</Alert>)}
+			{alertMsg.is_alert && ( !alertMsg.status && <Alert severity="error">{alertMsg.msg}</Alert>)}
 		</Box>
 	)
 }
