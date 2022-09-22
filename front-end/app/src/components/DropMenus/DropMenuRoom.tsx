@@ -80,7 +80,7 @@ export default function DropMenuRoom(Props: {room:RoomsOfUser, socket:Socket}) {
 						{Props.room.user_role === 'owner' &&
 							<List dense={true} >
 								<ListItem disablePadding>
-									<ListItemButton onClick={() => { handleClose() }}>
+									<ListItemButton onClick={() => { handleClose();leaveRoom(Props.socket) }}>
 										<ListItemIcon>
 											<ExitToAppIcon />
 										</ListItemIcon>

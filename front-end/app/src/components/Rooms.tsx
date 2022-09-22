@@ -32,7 +32,7 @@ const Rooms = () => {
 	}
 
 	const receiveUpdate = () => {
-		console.log("check data :  ");
+		// console.log("check data :  ");
 		socket.on('roomsOfUser', (data: { status: boolean, message: string, user: string }) => {
 			console.log("check data :  "+data);
 			if (data.status)
@@ -50,13 +50,13 @@ const Rooms = () => {
 		// Get Rooms
 		if (rooms.length === 0)
 			getRooms();
-		if (socket.connected)
+		if (socket)
 			receiveUpdate();
 		return () => {
 			console.log("clear rooms");
 			// setRooms(initRooms);
 		}
-	}, [currentRoom])
+	}, [socket])
 
 	return (
 		<Box
